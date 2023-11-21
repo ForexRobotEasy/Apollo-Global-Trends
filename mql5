@@ -1,0 +1,78 @@
+mql5
+#property copyright 'forexroboteasy.com'
+#property link 'https://www.forexroboteasy.com'
+#property version '1.0'
+#property description 'Apollo Global Trends Trading Robot'
+
+// Developer: Forex Robot Easy Team
+
+// Define input parameters
+input ENUM_TIMEFRAMES TimeFrame = PERIOD_H1; // Default time frame is H1
+input string Symbol = 'EURUSD'; // Default symbol is EURUSD
+
+// Define global variables
+double trend;
+
+// Define initialization function
+int OnInit()
+{
+    // Set up indicator buffers
+    SetIndexBuffer(0, trend);
+
+    // Set up indicator parameters
+    SetIndexStyle(0, DRAW_LINE);
+    SetIndexLabel(0, 'Trend');
+
+    // Set up symbol and time frame
+    Symbol = StringConcatenate(Symbol, 'm');
+    ChartSetSymbolPeriod(0, Symbol, TimeFrame);
+
+    return(INIT_SUCCEEDED);
+}
+
+// Define deinitialization function
+void OnDeinit(const int reason)
+{
+    // Remove indicator buffers
+    SetIndexEmptyValue(0, EMPTY_VALUE);
+}
+
+// Define start function
+void OnTick()
+{
+    // Calculate trend indicator
+    CalculateTrend();
+
+    // Check for buy signal
+    if (trend > 0)
+    {
+        // Place buy order
+        OrderSend(Symbol, OP_BUY, 1, Ask, 3, 0, 0, 'Buy', 0, 0, Green);
+    }
+    // Check for sell signal
+    else if (trend < 0)
+    {
+        // Place sell order
+        OrderSend(Symbol, OP_SELL, 1, Bid, 3, 0, 0, 'Sell', 0, 0, Red);
+    }
+}
+
+// Define function to calculate trend
+void CalculateTrend()
+{
+    // Add code to calculate trend here
+    trend = iCustom(Symbol, TimeFrame, 'TrendIndicator', 0, 0);
+}
+
+// Define function to handle trade events
+void OnTrade()
+{
+    // Add code to handle trade events here
+}
+
+// Define function to handle chart events
+void OnChartEvent(const int id, const long& lparam, const double& dparam, const string& sparam)
+{
+    // Add code to handle chart events here
+}
+
